@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const createError = require('http-errors');
 const cors = require('cors');
+const IndexRoute = require('./routes');
 
 class App{
     constructor(){
@@ -23,6 +24,9 @@ class App{
                 "message": "Hi Started Successfully"
             })
         })
+
+        // Use Routes after connection
+        await new IndexRoute(this.app).initialize()
 
         // Handling Undefined route
         this.app.use(async (req, res, next) => {
