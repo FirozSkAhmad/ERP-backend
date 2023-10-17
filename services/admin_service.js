@@ -21,46 +21,58 @@ class AdminService {
 
     async validateUser(userDetails) {
         try {
-            // check if already verified
-            const data = await global.DATA.MODELS.userstatus.findOne({
-                where: {
-                    "emailId": userDetails.emailId
-                }
-            }).catch(err => {
-                throw new global.DATA.PLUGINS.httperrors.INTERNAL_SERVER_ERROR(Constants.SQL_ERROR)
-            })
 
-            if (data.status === "V") {
-                throw new global.DATA.PLUGINS.httperrors.BadRequest("USER ALREADY VERIFIED")
-            }
-
-            // Update status and add to the user table
-            await global.DATA.CONNECTION.mysql.transaction(async (t) => {
-
-                await global.DATA.MODELS.userstatus.update({
-                    status: "V"
-                }, {
+            if (userDetails.status === 'R') {
+                // Delete from the userstatus table: Reject
+                await global.DATA.MODELS.userstatus.destroy({
                     where: {
                         emailId: userDetails.emailId
-                    },
-                    transaction: t
+                    }
                 }).catch(err => {
                     throw new global.DATA.PLUGINS.httperrors.INTERNAL_SERVER_ERROR(Constants.SQL_ERROR)
                 })
 
-                await global.DATA.MODELS.users.create({
-                    emailId: data.emailId,
-                    password: data.password,
-                    name: data.name,
-                    role_type: data.role_type,
-                    user_type: data.user_type
-                }, {
-                    transaction: t
-                }).catch(err => {
-                    throw new global.DATA.PLUGINS.httperrors.INTERNAL_SERVER_ERROR(Constants.SQL_ERROR)
-                })
+            }
+            if (userDetails.status === 'V') {
+                // Delete from the user status and add to the user table
+                await global.DATA.CONNECTION.mysql.transaction(async (t) => {
 
-            })
+                    // Get the details from the userstatus table
+                    const data = await global.DATA.MODELS.userstatus.findOne({
+                        where: {
+                            emailId: userDetails.emailId
+                        },
+                        transaction: t
+                    }).catch(err => {
+                        throw new global.DATA.PLUGINS.httperrors.INTERNAL_SERVER_ERROR(Constants.SQL_ERROR)
+                    })
+
+                    // Add to the users table
+                    await global.DATA.MODELS.users.create({
+                        emailId: data.emailId,
+                        password: data.password,
+                        name: data.name,
+                        role_type: data.role_type,
+                        user_type: data.user_type
+                    }, {
+                        transaction: t
+                    }).catch(err => {
+                        throw new global.DATA.PLUGINS.httperrors.INTERNAL_SERVER_ERROR(Constants.SQL_ERROR)
+                    })
+
+                    //Delete from the userstatus table
+                    await global.DATA.MODELS.userstatus.destroy({
+                        where: {
+                            emailId: userDetails.emailId
+                        },
+                        transaction: t
+                    }).catch(err => {
+                        throw new global.DATA.PLUGINS.httperrors.INTERNAL_SERVER_ERROR(Constants.SQL_ERROR)
+                    })
+
+                })
+            }
+            return "STATUS UPDATED SUCCESSFULLY"
 
         }
         catch (err) {
