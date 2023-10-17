@@ -3,6 +3,12 @@ require('dotenv').config();
 global.DATA = {
     CONNECTION: {
         mysql: undefined
+    },
+    MODELS: {
+
+    },
+    PLUGINS: {
+
     }
 }
 
@@ -21,7 +27,8 @@ const InitializeConnection = async () => {
 async function IntializeApp() {
     const App = require('./app');
     const app = new App();
-    app.listen();
+    await app.StarterFunction();
+    await app.listen();
 }
 
 (async function () {

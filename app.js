@@ -1,16 +1,24 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const createError = require('http-errors');
 const cors = require('cors');
 const IndexRoute = require('./routes');
+const IndexModel = require('./utils/Models')
+const PluginsLoader = require('./utils/Plugins')
 
-class App{
-    constructor(){
+class App {
+    constructor() {
         this.app = express();
-        this.StarterFunction();
     }
 
-    async StarterFunction(){
+    async StarterFunction() {
+        // Load PLUGINS
+        await new PluginsLoader().loadPlugins()
+        console.log("PLUGINS loaded")
+
+        // Load MySQL Models
+        await new IndexModel().loadModels()
+        console.log("MODELS loaded")
+
         this.app.use(cors({
             origin: '*'
         }))
@@ -30,7 +38,7 @@ class App{
 
         // Handling Undefined route
         this.app.use(async (req, res, next) => {
-            next(createError.NotFound("URL not found. Please enter valid URL"))
+            next(DATA.PLUGINS.httperrors.NotFound("URL not found. Please enter valid URL"))
         })
 
         // Error Handler
