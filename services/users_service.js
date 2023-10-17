@@ -1,8 +1,9 @@
 const Constants = require('../utils/Constants/response_messages')
+const JWTHelper = require('../utils/Helpers/jwt_helper')
 
 class UserService {
     constructor() {
-
+        this.jwtObject = new JWTHelper();
     }
 
     async createUser(userdetails) {
@@ -56,6 +57,45 @@ class UserService {
             });
 
             return newUser;
+        }
+        catch (err) {
+            throw err;
+        }
+    }
+
+    async loginUser(userDetails) {
+        try {
+            const user = await global.DATA.MODELS.users.findOne({
+                "where": {
+                    emailId: userDetails.emailId
+                }
+            }).catch(err => {
+                throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR)
+            })
+
+            if (!user) {
+                throw new global.DATA.PLUGINS.httperrors.NotFound("User Not Registered")
+            }
+
+            const userPassword = user.password;
+
+            const isValid = await global.DATA.PLUGINS.bcrypt.compare(userDetails.password, userPassword);
+            if (!isValid) {
+                throw new global.DATA.PLUGINS.httperrors.Unauthorized("Email/Password not valid")
+            }
+
+            // Valid email and password
+            const tokenPayload = user.id.toString() + ":" + user.role_type
+
+            const accessToken = await this.jwtObject.generateAccessToken(tokenPayload);
+
+            const refreshToken = await this.jwtObject.generateRefreshToken(tokenPayload);
+
+            const data = {
+                accessToken, refreshToken, "id": user.id, "email": user.emailId
+            }
+            return data
+
         }
         catch (err) {
             throw err;

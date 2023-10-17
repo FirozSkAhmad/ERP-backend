@@ -21,4 +21,19 @@ router.post('/register', async (req, res, next) => {
     }
 })
 
+router.post('/login', async (req, res, next) => {
+    try {
+        const userSeviceObj = new UserService();
+        const data = await userSeviceObj.loginUser(req.body);
+        res.send({
+            "status": 200,
+            "message": Constants.SUCCESS,
+            "data": data
+        })
+    }
+    catch (err) {
+        next(err);
+    }
+})
+
 module.exports = router;
