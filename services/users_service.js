@@ -27,8 +27,11 @@ class UserService {
                 throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR)
             })
 
-            if (checkInUsers || checkInUserStatus) {
+            if (checkInUsers) {
                 throw new global.DATA.PLUGINS.httperrors.BadRequest("EMAIL ID ALREADY PRESENT")
+            }
+            if (checkInUserStatus) {
+                throw new global.DATA.PLUGINS.httperrors.BadRequest("You Might Not Approved Yet !")
             }
 
             // User Id not present

@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize')
 
 const ProjectsModel = global.DATA.CONNECTION.mysql.define("projects", {
-    id: {
+    project_id: {
         type: Sequelize.DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
@@ -9,10 +9,6 @@ const ProjectsModel = global.DATA.CONNECTION.mysql.define("projects", {
     },
     project_name: {
         type: Sequelize.DataTypes.STRING(200),
-        allowNull: false
-    },
-    project_id: {
-        type: Sequelize.DataTypes.BIGINT,
         allowNull: false
     },
     tower_number: {
@@ -37,6 +33,26 @@ const ProjectsModel = global.DATA.CONNECTION.mysql.define("projects", {
     },
     plot_number: {
         type: Sequelize.DataTypes.STRING(100),
+        allowNull: true
+    },
+    pid:{
+        type: Sequelize.DataTypes.STRING(100),
+        allowNull: false
+    },
+    client_name:{
+        type: Sequelize.DataTypes.STRING(100),
+        allowNull: true
+    },
+    client_phone:{
+        type: Sequelize.DataTypes.STRING(100),
+        allowNull: true
+    },
+    sales_person:{
+        type: Sequelize.DataTypes.STRING(100),
+        allowNull: true
+    },
+    amount_received:{
+        type: Sequelize.DataTypes.INTEGER,
         allowNull: true
     },
     createdAt: {
