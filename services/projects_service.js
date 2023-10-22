@@ -143,6 +143,74 @@ class ProjectsService {
         }
     }
 
+    async changeProjectStatus(payload) {
+        try {
+            await global.DATA.CONNECTION.mysql.transaction(async (t) => {
+
+                //check project exist in income table or not 
+                const checkProjectExistAlreadyInProject = await global.DATA.MODELS.income.findOne({
+                    where: {
+                        project_id: payload.project_id
+                    },
+                    transaction: t
+                }).catch(err => {
+                    throw createError.InternalServerError(SQL_ERROR);
+                })
+
+                //Update status and amount in projects table
+                await global.DATA.MODELS.projects.update({
+                    status: payload.status,
+                    amount_received: parseInt(checkProjectExistAlreadyInProject.amount_received) + parseInt(payload.amount_received)
+                }, {
+                    where: {
+                        project_id: payload.project_id,
+                    },
+                    transaction: t
+                }).catch(err => {
+                    throw createError.InternalServerError(SQL_ERROR);
+                })
+
+                //check project exist in income table or not 
+                const checkProjectExistAlreadyInIncome = await global.DATA.MODELS.income.findOne({
+                    where: {
+                        project_id: payload.project_id
+                    },
+                    transaction: t
+                }).catch(err => {
+                    throw createError.InternalServerError(SQL_ERROR);
+                })
+
+                console.log("checkProjectExistAlreadyInIncome:",checkProjectExistAlreadyInIncome)
+                let previouslyReceivedAmount = checkProjectExistAlreadyInIncome.amount_received;
+                console.log('previously received amount:', previouslyReceivedAmount);
+
+                if (checkProjectExistAlreadyInIncome) {
+                    console.log("project already exists in income table");
+                    //then update details with amount added 
+
+                    let updateIncomeDetails = {
+                        status: payload.status,
+                        amount_received: parseInt(previouslyReceivedAmount) + parseInt(payload.amount_received),
+                    }
+
+                    await global.DATA.MODELS.income.update(updateIncomeDetails, {
+                        where: {
+                            project_id: payload.project_id
+                        },
+                        transaction: t
+                    })
+                }
+                else {
+                    throw createError.BadRequest("First Onboard the Client and then change the project status")
+                }
+            })
+            return "Project Status Changed Successfully"
+
+        } catch (err) {
+            throw err;
+        }
+    }
+    
     async getProjectNames() {
         try {
             console.log('enter')

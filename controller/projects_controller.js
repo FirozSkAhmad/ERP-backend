@@ -206,6 +206,26 @@ router.post('/editProject', jwtHelperObj.verifyAccessToken, async (req, res, nex
     }
 })
 
+router.post('/changeProjectStatus', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
+    try {
+        const projectsServiceObj = new ProductsService()
+        const data = await projectsServiceObj.changeProjectStatus(req.body)
+            .catch(err => {
+                console.log("Error occured", err.message);
+                throw err;
+            })
+
+        res.send({
+            "status": 200,
+            "message": Constants.SUCCESS,
+            "data": data
+        })
+    }
+    catch (err) {
+        next(err);
+    }
+})
+
 router.get('/getProjects', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
     try {
         const projectsServiceObj = new ProductsService()
