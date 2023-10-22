@@ -1,3 +1,4 @@
+const Constants = require('../Constants/response_messages')
 class JWTHelper {
     constructor() {
 
@@ -42,9 +43,17 @@ class JWTHelper {
             })
         })
     }
-
-    async verifyToken() {
-
+    verifyAccessToken(req, res, next) {
+        if (!req.headers['authorization']) return next(new global.DATA.PLUGINS.httperrors.Unauthorized("Please provide token"))
+        const authHeader = req.headers['authorization']
+        const bearerToken = authHeader.split(' ')
+        const token = bearerToken[1]
+        global.DATA.PLUGINS.jsonwebtoken.verify(token, process.env.ACCESS_TOKEN_SECRETKEY, (err, payload) => {
+            if (err) {
+                return next(new global.DATA.PLUGINS.httperrors.Unauthorized("Token Invalid/Expired"))
+            }
+            next();
+        })
     }
 }
 
