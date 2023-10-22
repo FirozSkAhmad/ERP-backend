@@ -52,8 +52,8 @@ class AdminService {
                         emailId: data.emailId,
                         password: data.password,
                         name: data.name,
-                        role_type: data.role_type,
-                        user_type: data.user_type
+                        role_type: userDetails.role_type,
+                        user_type: userDetails.role_type
                     }, {
                         transaction: t
                     }).catch(err => {

@@ -95,7 +95,7 @@ class UserService {
             const refreshToken = await this.jwtObject.generateRefreshToken(tokenPayload);
 
             const data = {
-                accessToken, refreshToken, "id": user.id, "email": user.emailId
+                accessToken, refreshToken, "id": user.id, "email": user.emailId, role_type: user.role_type
             }
             return data
 
