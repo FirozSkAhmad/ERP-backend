@@ -2,8 +2,11 @@ const express = require('express')
 const Constants = require('../utils/Constants/response_messages');
 const IncomeService = require('../services/income_service');
 const router = express.Router()
+const JwtHelper = require('../utils/Helpers/jwt_helper')
+const jwtHelperObj = new JwtHelper();
 
-router.get('/getIncome', async (req,res,next)=>{
+
+router.get('/getIncome',jwtHelperObj.verifyAccessToken, async (req,res,next)=>{
     try{
         const incomeServiceObj = new IncomeService()
         const data = await incomeServiceObj.getIncome()

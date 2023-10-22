@@ -1,12 +1,12 @@
 const express = require('express')
 const ProductsService = require('../services/projects_service');
-// const JwtHelper = require('../utils/Helpers/jwt_helper')
 const Constants = require('../utils/Constants/response_messages')
 
 const router = express.Router()
-// const jwtHelperObj = new JwtHelper();
+const JwtHelper = require('../utils/Helpers/jwt_helper')
+const jwtHelperObj = new JwtHelper();
 
-router.post('/createNewProject', async (req, res, next) => {
+router.post('/createNewProject',jwtHelperObj.verifyAccessToken, async (req, res, next) => {
     try {
         const projectsServiceObj = new ProductsService();
         const data = await projectsServiceObj.createNewProject(req.body)
@@ -26,7 +26,7 @@ router.post('/createNewProject', async (req, res, next) => {
     }
 })
 
-router.get('/getProjectNames', async (req, res, next) => {
+router.get('/getProjectNames',jwtHelperObj.verifyAccessToken, async (req, res, next) => {
     try {
         const projectsServiceObj = new ProductsService()
         const data = await projectsServiceObj.getProjectNames()
@@ -46,7 +46,7 @@ router.get('/getProjectNames', async (req, res, next) => {
     }
 })
 
-router.get('/getFilteredProjectTypes/:projectName', async (req, res, next) => {
+router.get('/getFilteredProjectTypes/:projectName', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
     try {
         const projectsServiceObj = new ProductsService();
         const payload = {
@@ -69,7 +69,7 @@ router.get('/getFilteredProjectTypes/:projectName', async (req, res, next) => {
     }
 })
 
-router.get('/getFilteredProjectTowerNumbers/:projectName/:projectType', async (req, res, next) => {
+router.get('/getFilteredProjectTowerNumbers/:projectName/:projectType', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
     try {
         const projectsServiceObj = new ProductsService();
         const payload = {
@@ -93,7 +93,7 @@ router.get('/getFilteredProjectTowerNumbers/:projectName/:projectType', async (r
     }
 })
 
-router.get('/getFilteredProjectFlatNumbers/:projectName/:projectType/:projectTowerNumber', async (req, res, next) => {
+router.get('/getFilteredProjectFlatNumbers/:projectName/:projectType/:projectTowerNumber', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
     try {
         const projectsServiceObj = new ProductsService();
         const payload = {
@@ -118,7 +118,7 @@ router.get('/getFilteredProjectFlatNumbers/:projectName/:projectType/:projectTow
     }
 })
 
-router.get('/getFilteredProjectVillaNumbers/:projectName/:projectType', async (req, res, next) => {
+router.get('/getFilteredProjectVillaNumbers/:projectName/:projectType', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
     try {
         const projectsServiceObj = new ProductsService();
         const payload = {
@@ -142,7 +142,7 @@ router.get('/getFilteredProjectVillaNumbers/:projectName/:projectType', async (r
     }
 })
 
-router.get('/getFilteredProjectPlotNumbers/:projectName/:projectType', async (req, res, next) => {
+router.get('/getFilteredProjectPlotNumbers/:projectName/:projectType', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
     try {
         const projectsServiceObj = new ProductsService();
         const payload = {
@@ -166,7 +166,7 @@ router.get('/getFilteredProjectPlotNumbers/:projectName/:projectType', async (re
     }
 })
 
-router.get('/getFilteredProjectStatus', async (req, res, next) => {
+router.get('/getFilteredProjectStatus', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
     try {
         const projectsServiceObj = new ProductsService();
         const data = await projectsServiceObj.getFilteredProjectStatus(req.body)
@@ -186,7 +186,7 @@ router.get('/getFilteredProjectStatus', async (req, res, next) => {
     }
 })
 
-router.post('/editProject', async (req, res, next) => {
+router.post('/editProject', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
     try {
         const projectsServiceObj = new ProductsService()
         const data = await projectsServiceObj.editProject(req.body)
@@ -206,7 +206,7 @@ router.post('/editProject', async (req, res, next) => {
     }
 })
 
-router.get('/getProjects', async (req, res, next) => {
+router.get('/getProjects', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
     try {
         const projectsServiceObj = new ProductsService()
         const data = await projectsServiceObj.getProjects()

@@ -1,10 +1,11 @@
 const express = require('express')
 const Constants = require('../utils/Constants/response_messages');
 const ReceiptServices = require('../services/receipts_service');
-
+const JwtHelper = require('../utils/Helpers/jwt_helper')
+const jwtHelperObj = new JwtHelper();
 const router = express.Router()
 
-router.post('/createReceipt', async (req,res,next)=>{
+router.post('/createReceipt', jwtHelperObj.verifyAccessToken, async (req,res,next)=>{
     try {
         const reciptsServiceObj = new ReceiptServices();
         const data = await reciptsServiceObj.createReceipt(req.body)
@@ -24,7 +25,7 @@ router.post('/createReceipt', async (req,res,next)=>{
     }
 })
 
-router.post('/validateReceipt', async (req,res,next)=>{
+router.post('/validateReceipt', jwtHelperObj.verifyAccessToken, async (req,res,next)=>{
     try{
         const reciptsServiceObj = new ReceiptServices();
         const data = await reciptsServiceObj.validateReceipt(req.body)
@@ -44,7 +45,7 @@ router.post('/validateReceipt', async (req,res,next)=>{
     }
 })
 
-router.post('/rejectReceipt', async (req,res,next)=>{
+router.post('/rejectReceipt', jwtHelperObj.verifyAccessToken, async (req,res,next)=>{
     try{
         const reciptsServiceObj = new ReceiptServices();
         const data = await reciptsServiceObj.rejectReceipt(req.body)
@@ -64,7 +65,7 @@ router.post('/rejectReceipt', async (req,res,next)=>{
     }
 })
 
-router.get('/getReceipts', async (req,res,next)=>{
+router.get('/getReceipts', jwtHelperObj.verifyAccessToken, async (req,res,next)=>{
     try{
         const reciptsServiceObj = new ReceiptServices();
         const data = await reciptsServiceObj.getReceipts()

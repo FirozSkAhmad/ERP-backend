@@ -1,10 +1,11 @@
 const express = require('express');
 const AdminService = require('../services/admin_service');
 const Constants = require('../utils/Constants/response_messages')
-
+const JwtHelper = require('../utils/Helpers/jwt_helper')
+const jwtHelperObj = new JwtHelper();
 const router = express.Router()
 
-router.get('/getUsersList', async (req, res, next) => {
+router.get('/getUsersList',jwtHelperObj.verifyAccessToken, async (req, res, next) => {
     try {
         const adminServiceObj = new AdminService();
         const data = await adminServiceObj.getUsersList();
@@ -21,7 +22,7 @@ router.get('/getUsersList', async (req, res, next) => {
     }
 })
 
-router.post('/validateUser', async (req, res, next) => {
+router.post('/validateUser', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
     try {
         const adminServiceObj = new AdminService()
         await adminServiceObj.validateUser(req.body)

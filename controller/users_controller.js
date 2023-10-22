@@ -1,9 +1,8 @@
 const express = require('express')
-
 const UserService = require('../services/users_service')
-
+const JwtHelper = require('../utils/Helpers/jwt_helper')
+const jwtHelperObj = new JwtHelper();
 const router = express.Router()
-
 const Constants = require('../utils/Constants/response_messages')
 
 router.post('/register', async (req, res, next) => {
