@@ -1,4 +1,6 @@
-const Constants = require('../utils/Constants/response_messages')
+const { Sequelize } = require('sequelize');
+const Constants = require('../utils/Constants/response_messages');
+const createHttpError = require('http-errors');
 
 class PayrollService {
     constructor() {
@@ -43,7 +45,7 @@ class PayrollService {
 
     async getPayRollDetails() {
         try {
-            const data = await await global.DATA.MODELS.payroll.findAll().catch(err => {
+            const data = await global.DATA.MODELS.payroll.findAll().catch(err => {
                 console.log("Error while fetching payroll data", err);
                 throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR);
             });
@@ -57,6 +59,20 @@ class PayrollService {
 
     async deletePayRollDetails() {
 
+    }
+
+    async getExpenses(){
+        try{
+            const expenseData = await global.DATA.CONNECTION.mysql.query(`select SUM(amount) as total_expense from payroll`,{
+                type : Sequelize.QueryTypes.SELECT
+            }).catch(err=>{
+                console.log("error in getting expenses:",err.message);
+                throw createHttpError.InternalServerError(Constants.SQL_ERROR);
+            })
+            return expenseData[0].total_expense
+        }catch(err){
+            throw err;
+        }
     }
 }
 

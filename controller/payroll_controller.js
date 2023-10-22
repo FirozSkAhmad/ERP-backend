@@ -55,4 +55,20 @@ router.get('/getPayRollDetails', jwtHelperObj.verifyAccessToken, async (req, res
         next(err);
     }
 })
+
+router.get('/getExpenses',jwtHelperObj.verifyAccessToken, async (req, res, next) => {
+    try {
+        const payRollServiceObj = new PayrollService();
+        const data = await payRollServiceObj.getExpenses();
+        res.send({
+            "status": 200,
+            "message": Constants.SUCCESS,
+            "data": data
+        })
+
+    }
+    catch (err) {
+        next(err);
+    }
+})
 module.exports = router;
