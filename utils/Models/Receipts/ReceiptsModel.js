@@ -1,11 +1,10 @@
 const Sequelize = require('sequelize')
 
-const ProjectsModel = global.DATA.CONNECTION.mysql.define("projects", {
+const ReceiptsModel = global.DATA.CONNECTION.mysql.define("receipts", {
     project_id: {
         type: Sequelize.DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
-        autoIncrement: true
     },
     project_name: {
         type: Sequelize.DataTypes.STRING(200),
@@ -36,7 +35,7 @@ const ProjectsModel = global.DATA.CONNECTION.mysql.define("projects", {
         allowNull: true
     },
     pid:{
-        type: Sequelize.DataTypes.STRING(200),
+        type: Sequelize.DataTypes.STRING(100),
         allowNull: false
     },
     client_name:{
@@ -64,7 +63,7 @@ const ProjectsModel = global.DATA.CONNECTION.mysql.define("projects", {
         allowNull: false
     },
 }, {
-    tableName: "projects"
+    tableName: "receipts"
 })
 
-module.exports = ProjectsModel
+module.exports = ReceiptsModel
