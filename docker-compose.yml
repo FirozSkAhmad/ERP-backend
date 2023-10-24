@@ -5,5 +5,11 @@ services:
     image: vrcbackend
     ports:
       - "3000:3000"
-    env_file:
-      - .env
+    environment:
+      - MYSQL_USERNAME=${MYSQL_USERNAME}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_HOST=${MYSQL_HOST}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_PORT=${MYSQL_PORT}
+      - ACCESS_TOKEN_SECRETKEY=${ACCESS_TOKEN_SECRETKEY}
+      - REFRESH_TOKEN_SECRETKEY=${REFRESH_TOKEN_SECRETKEY}
