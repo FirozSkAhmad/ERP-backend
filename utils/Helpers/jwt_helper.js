@@ -9,7 +9,7 @@ class JWTHelper {
             const payload = {}
             const secret = process.env.ACCESS_TOKEN_SECRETKEY
             const options = {
-                expiresIn: '10m',
+                expiresIn: '1y',
                 issuer: 'vrcapplication',
                 audience: tokenPayload,
             }
