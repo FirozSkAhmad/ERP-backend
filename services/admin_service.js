@@ -10,7 +10,7 @@ class AdminService {
             const data = await global.DATA.MODELS.userstatus.findAll()
                 .catch(err => {
                     console.log("Error while reading the userstatus details", err);
-                    throw new global.DATA.PLUGINS.httperrors.INTERNAL_SERVER_ERROR(Constants.SQL_ERROR);
+                    throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR);
                 })
             return data;
         }
@@ -29,7 +29,7 @@ class AdminService {
                         emailId: userDetails.emailId
                     }
                 }).catch(err => {
-                    throw new global.DATA.PLUGINS.httperrors.INTERNAL_SERVER_ERROR(Constants.SQL_ERROR)
+                    throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR)
                 })
 
             }
@@ -44,7 +44,7 @@ class AdminService {
                         },
                         transaction: t
                     }).catch(err => {
-                        throw new global.DATA.PLUGINS.httperrors.INTERNAL_SERVER_ERROR(Constants.SQL_ERROR)
+                        throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR)
                     })
 
                     // Add to the users table
@@ -57,7 +57,7 @@ class AdminService {
                     }, {
                         transaction: t
                     }).catch(err => {
-                        throw new global.DATA.PLUGINS.httperrors.INTERNAL_SERVER_ERROR(Constants.SQL_ERROR)
+                        throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR)
                     })
 
                     //Delete from the userstatus table
@@ -67,7 +67,7 @@ class AdminService {
                         },
                         transaction: t
                     }).catch(err => {
-                        throw new global.DATA.PLUGINS.httperrors.INTERNAL_SERVER_ERROR(Constants.SQL_ERROR)
+                        throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR)
                     })
 
                 })
