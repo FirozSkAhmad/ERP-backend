@@ -29,6 +29,7 @@ class AdminService {
                         emailId: userDetails.emailId
                     }
                 }).catch(err => {
+                    console.log(err);
                     throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR)
                 })
 
@@ -44,6 +45,7 @@ class AdminService {
                         },
                         transaction: t
                     }).catch(err => {
+                        console.log(err);
                         throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR)
                     })
 
@@ -57,6 +59,7 @@ class AdminService {
                     }, {
                         transaction: t
                     }).catch(err => {
+                        console.log(err);
                         throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR)
                     })
 
@@ -76,6 +79,7 @@ class AdminService {
 
         }
         catch (err) {
+            console.log(err);
             throw err;
         }
     }

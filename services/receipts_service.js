@@ -14,13 +14,13 @@ class ReceiptServices {
             let payloadIdentifierCheck;
             let checkProjectName = (payload.project_name).split('').join('');
             let checkProjectType = (payload.project_type).split('').join('');
-            if (checkProjectType === 'Appartment') {
+            if (checkProjectType === 'Apartment') {
                 let checkProjectTowerNumber = (payload.tower_number).split('').join('');
                 let checkProjectFlatNumber = (payload.flat_number).split('').join('');
                 payloadIdentifierCheck = checkProjectName + '_' + checkProjectType + '_' + checkProjectTowerNumber + '_' + checkProjectFlatNumber;
             }
             else if (checkProjectType === 'Villa') {
-                let checkProjectVillaNumber = (paylplot).split('').join('');
+                let checkProjectVillaNumber = (payload.villa_number).split('').join('');
                 payloadIdentifierCheck = checkProjectName + '_' + checkProjectType + '_' + checkProjectVillaNumber;
             }
             else if (checkProjectType === 'Plot') {

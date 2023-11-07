@@ -14,13 +14,13 @@ class ProjectsService {
             let payloadIdentifierCheck;
             let checkProjectName = (payload.project_name).split('').join('');
             let checkProjectType = (payload.project_type).split('').join('');
-            if (checkProjectType === 'Appartment') {
+            if (checkProjectType === 'Apartment') {
                 let checkProjectTowerNumber = (payload.tower_number).split('').join('');
                 let checkProjectFlatNumber = (payload.flat_number).split('').join('');
                 payloadIdentifierCheck = checkProjectName + '_' + checkProjectType + '_' + checkProjectTowerNumber + '_' + checkProjectFlatNumber;
             }
             else if (checkProjectType === 'Villa') {
-                let checkProjectVillaNumber = (paylplot).split('').join('');
+                let checkProjectVillaNumber = (payload.villa_number).split('').join('');
                 payloadIdentifierCheck = checkProjectName + '_' + checkProjectType + '_' + checkProjectVillaNumber;
             }
             else if (checkProjectType === 'Plot') {
@@ -71,13 +71,13 @@ class ProjectsService {
             let payloadIdentifierCheck;
             let checkProjectName = (payload.project_name).split('').join('');
             let checkProjectType = (payload.project_type).split('').join('');
-            if (checkProjectType === 'Appartment') {
+            if (checkProjectType === 'Apartment') {
                 let checkProjectTowerNumber = (payload.tower_number).split('').join('');
                 let checkProjectFlatNumber = (payload.flat_number).split('').join('');
                 payloadIdentifierCheck = checkProjectName + '_' + checkProjectType + '_' + checkProjectTowerNumber + '_' + checkProjectFlatNumber;
             }
             else if (checkProjectType === 'Villa') {
-                let checkProjectVillaNumber = (paylplot).split('').join('');
+                let checkProjectVillaNumber = (payload.villa_number).split('').join('');
                 payloadIdentifierCheck = checkProjectName + '_' + checkProjectType + '_' + checkProjectVillaNumber;
             }
             else if (checkProjectType === 'Plot') {
@@ -108,7 +108,7 @@ class ProjectsService {
 
             console.log('edit doesn not exist:', payloadIdentifierCheck);
             let UpdateQuery;
-            if (payload.project_type === 'Appartment') {
+            if (payload.project_type === 'Apartment') {
                 UpdateQuery = `update projects set project_name='${payload.project_name}', tower_number='${payload.tower_number}' , flat_number='${payload.flat_number}' , status='${payload.status}' , pid='${payloadIdentifierCheck}' where project_id=${currentProjectId}`
             }
             else if (payload.project_type === 'Villa') {
@@ -210,7 +210,7 @@ class ProjectsService {
             throw err;
         }
     }
-    
+
     async getProjectNames() {
         try {
             console.log('enter')
@@ -274,8 +274,8 @@ class ProjectsService {
 
     async getFilteredProjectTowerNumbers(payload) {
         try {
-            if (payload.project_type !== 'Appartment') {
-                throw createError.BadGateway("Tower Numbers will be for Appartment Project Types")
+            if (payload.project_type !== 'Apartment') {
+                throw createError.BadGateway("Tower Numbers will be for Apartment Project Types")
             }
             const response = await DATA.CONNECTION.mysql.query(`select tower_number from projects where project_name='${payload.project_name}' and project_type='${payload.project_type}'`, {
                 type: Sequelize.QueryTypes.SELECT
@@ -307,8 +307,8 @@ class ProjectsService {
 
     async getFilteredProjectFlatNumbers(payload) {
         try {
-            if (payload.project_type !== 'Appartment') {
-                throw createError.BadGateway("Tower and Flat Numbers will be for Appartment Project Types")
+            if (payload.project_type !== 'Apartment') {
+                throw createError.BadGateway("Tower and Flat Numbers will be for Apartment Project Types")
             }
             const response = await DATA.CONNECTION.mysql.query(`select flat_number from projects where project_name='${payload.project_name}' and project_type='${payload.project_type}' and tower_number='${payload.tower_number}'`, {
                 type: Sequelize.QueryTypes.SELECT
@@ -356,8 +356,8 @@ class ProjectsService {
 
             // Filter the data array to get only unique project_name values
             let uniqueProjectVillaData = data.filter(item => {
-                if (!uniqueProjectVillaNumbers.has((item.tower_number).split('').join(''))) {
-                    uniqueProjectVillaNumbers.add((item.tower_number).split('').join(''));
+                if (!uniqueProjectVillaNumbers.has((item.villa_number).split('').join(''))) {
+                    uniqueProjectVillaNumbers.add((item.villa_number).split('').join(''));
                     return true;
                 }
                 return false;
@@ -389,8 +389,8 @@ class ProjectsService {
 
             // Filter the data array to get only unique project_name values
             let uniqueProjectPlotsData = data.filter(item => {
-                if (!uniqueProjectPlotNumbers.has((item.tower_number).split('').join(''))) {
-                    uniqueProjectPlotNumbers.add((item.tower_number).split('').join(''));
+                if (!uniqueProjectPlotNumbers.has((item.plot_number).split('').join(''))) {
+                    uniqueProjectPlotNumbers.add((item.plot_number).split('').join(''));
                     return true;
                 }
                 return false;
@@ -408,7 +408,7 @@ class ProjectsService {
         try {
             let query = '';
             console.log('project_type:', payload.project_type);
-            if (payload.project_type === 'Appartment') {
+            if (payload.project_type === 'Apartment') {
                 query = `select status from projects where project_name='${payload.project_name}' and project_type='${payload.project_type}' and tower_number='${payload.tower_number}' and flat_number='${payload.flat_number}'`
             }
             else if (payload.project_type === 'Villa') {
