@@ -46,6 +46,26 @@ router.get('/getProjectNames',jwtHelperObj.verifyAccessToken, async (req, res, n
     }
 })
 
+router.get('/getAvailableProjectNames',jwtHelperObj.verifyAccessToken, async (req, res, next) => {
+    try {
+        const projectsServiceObj = new ProductsService()
+        const data = await projectsServiceObj.getAvailableProjectNames()
+            .catch(err => {
+                console.log("Error occured", err.message);
+                throw err;
+            })
+
+        res.send({
+            "status": 200,
+            "message": Constants.SUCCESS,
+            "data": data
+        })
+    }
+    catch (err) {
+        next(err);
+    }
+})
+
 router.get('/getFilteredProjectTypes/:projectName', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
     try {
         const projectsServiceObj = new ProductsService();

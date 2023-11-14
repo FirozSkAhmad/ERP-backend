@@ -276,6 +276,36 @@ class ProjectsService {
         }
     }
 
+    async getAvailableProjectNames() {
+        try {
+            const response = await DATA.CONNECTION.mysql.query(`select project_name from projects where status='AVAILABLE'`, {
+                type: Sequelize.QueryTypes.SELECT
+            }).catch(err => {
+                console.log("Error while fetching data", err.message);
+                throw createError.InternalServerError(SQL_ERROR);
+            })
+
+            const data = (response);
+            console.log("View All Projects", data);
+            let uniqueProjectNames = new Set();
+
+            // Filter the data array to get only unique project_name values
+            let uniqueProjectNameData = data.filter(item => {
+                if (!uniqueProjectNames.has(item.project_name.split('').join(''))) {
+                    uniqueProjectNames.add(item.project_name.split('').join(''));
+                    return true;
+                }
+                return false;
+            });
+
+            console.log(uniqueProjectNameData);
+            return uniqueProjectNameData;
+        }
+        catch (err) {
+            throw err;
+        }
+    }
+
     async getFilteredProjectTypes(payload) {
         try {
             const response = await DATA.CONNECTION.mysql.query(`select project_type from projects where project_name='${payload.project_name}'`, {
