@@ -35,4 +35,34 @@ router.post('/login', async (req, res, next) => {
     }
 })
 
+router.post("/resetPasswordSendRequest", async (req,res,next)=>{
+    try{
+        const userServiceObj = new UserService();
+        const data = await userServiceObj.sendPasswordResetRequest(req.body.emailId);
+        res.send({
+            "status": 200,
+            "message": data,
+            "data": data
+        })
+    }   
+    catch(err){
+        next(err);
+    }
+})
+
+router.post("/changePassword", async(req,res,next)=>{
+    try{
+        const userServiceObj = new UserService();
+        const data = await userServiceObj.changePassword(req.body.token,req.body.password);
+        res.send({
+            "status": 200,
+            "message": data,
+            "data": data
+        })
+    }
+    catch(err){
+        next(err);
+    }
+})
+
 module.exports = router;
