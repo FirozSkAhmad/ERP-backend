@@ -85,10 +85,10 @@ router.get('/getReceipts', jwtHelperObj.verifyAccessToken, async (req,res,next)=
     }
 })
 
-router.get('/getAvailableReceiptProjects', jwtHelperObj.verifyAccessToken, async (req,res,next)=>{
+router.get('/getAvailableReceiptProjectNames', jwtHelperObj.verifyAccessToken, async (req,res,next)=>{
     try{
         const reciptsServiceObj = new ReceiptServices();
-        const data = await reciptsServiceObj.getAvailableReceiptProjects()
+        const data = await reciptsServiceObj.getAvailableReceiptProjectNames()
         .catch(err=>{
             console.log("errors:",err.message);
             throw err;

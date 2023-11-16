@@ -157,7 +157,7 @@ class ReceiptServices {
         }
     }
 
-    async getAvailableReceiptProjects() {
+    async getAvailableReceiptProjectNames() {
         try {
             const response = await DATA.CONNECTION.mysql.query(`SELECT project_name
             FROM projects
@@ -169,7 +169,6 @@ class ReceiptServices {
             })
 
             const data = (response);
-            console.log("View All Projects", data);
             let uniqueProjectNames = new Set();
 
             // Filter the data array to get only unique project_name values
