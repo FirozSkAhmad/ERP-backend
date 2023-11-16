@@ -147,6 +147,38 @@ class ProjectsService {
         try {
             await global.DATA.CONNECTION.mysql.transaction(async (t) => {
 
+                let payloadIdentifierCheck;
+                let checkProjectName = (payload.project_name).split('').join('');
+                let checkProjectType = (payload.project_type).split('').join('');
+                if (checkProjectType === 'Apartment') {
+                    let checkProjectTowerNumber = (payload.tower_number).split('').join('');
+                    let checkProjectFlatNumber = (payload.flat_number).split('').join('');
+                    payloadIdentifierCheck = checkProjectName + '_' + checkProjectType + '_' + checkProjectTowerNumber + '_' + checkProjectFlatNumber;
+                }
+                else if (checkProjectType === 'Villa') {
+                    let checkProjectVillaNumber = (payload.villa_number).split('').join('');
+                    payloadIdentifierCheck = checkProjectName + '_' + checkProjectType + '_' + checkProjectVillaNumber;
+                }
+                else if (checkProjectType === 'Plot') {
+                    let checkProjectPlotNumber = (payload.plot_number).split('').join('');
+                    payloadIdentifierCheck = checkProjectName + '_' + checkProjectType + '_' + checkProjectPlotNumber;
+                }
+
+                const  getProjectData = await global.DATA.MODELS.projects.findOne({
+                    where: {
+                        pid: payloadIdentifierCheck
+                    },
+                    transaction: t
+                }).catch(err => {
+                    throw createError.InternalServerError(SQL_ERROR);
+                })
+                console.log('sd:',getProjectData);
+                console.log('sd check:',(getProjectData==null));
+                payload.pid = payloadIdentifierCheck;
+                payload.project_id = getProjectData?.project_id;
+                console.log('payload:',payload);
+
+                if((getProjectData==null)) throw createError.BadRequest("Project Does not exists")
                 //check project exist in income table or not 
                 const checkProjectExistAlreadyInProject = await global.DATA.MODELS.income.findOne({
                     where: {
@@ -180,7 +212,7 @@ class ProjectsService {
                     throw createError.InternalServerError(SQL_ERROR);
                 })
 
-                console.log("checkProjectExistAlreadyInIncome:",checkProjectExistAlreadyInIncome)
+                console.log("checkProjectExistAlreadyInIncome:", checkProjectExistAlreadyInIncome)
                 let previouslyReceivedAmount = checkProjectExistAlreadyInIncome.amount_received;
                 console.log('previously received amount:', previouslyReceivedAmount);
 
@@ -203,8 +235,10 @@ class ProjectsService {
                 else {
                     throw createError.BadRequest("First Onboard the Client and then change the project status")
                 }
+                
             })
             return "Project Status Changed Successfully"
+            
 
         } catch (err) {
             throw err;
@@ -215,6 +249,36 @@ class ProjectsService {
         try {
             console.log('enter')
             const response = await DATA.CONNECTION.mysql.query(`select project_name from projects`, {
+                type: Sequelize.QueryTypes.SELECT
+            }).catch(err => {
+                console.log("Error while fetching data", err.message);
+                throw createError.InternalServerError(SQL_ERROR);
+            })
+
+            const data = (response);
+            console.log("View All Projects", data);
+            let uniqueProjectNames = new Set();
+
+            // Filter the data array to get only unique project_name values
+            let uniqueProjectNameData = data.filter(item => {
+                if (!uniqueProjectNames.has(item.project_name.split('').join(''))) {
+                    uniqueProjectNames.add(item.project_name.split('').join(''));
+                    return true;
+                }
+                return false;
+            });
+
+            console.log(uniqueProjectNameData);
+            return uniqueProjectNameData;
+        }
+        catch (err) {
+            throw err;
+        }
+    }
+
+    async getAvailableProjectNames() {
+        try {
+            const response = await DATA.CONNECTION.mysql.query(`select project_name from projects where status='AVAILABLE'`, {
                 type: Sequelize.QueryTypes.SELECT
             }).catch(err => {
                 console.log("Error while fetching data", err.message);
