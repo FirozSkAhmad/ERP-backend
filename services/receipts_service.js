@@ -156,6 +156,37 @@ class ReceiptServices {
             throw err;
         }
     }
+
+    async getAvailableReceiptProjectNames() {
+        try {
+            const response = await DATA.CONNECTION.mysql.query(`SELECT project_name
+            FROM projects
+            WHERE project_id NOT IN (SELECT project_id FROM receipts);`, {
+                type: Sequelize.QueryTypes.SELECT
+            }).catch(err => {
+                console.log("Error while fetching data", err.message);
+                throw createError.InternalServerError(SQL_ERROR);
+            })
+
+            const data = (response);
+            let uniqueProjectNames = new Set();
+
+            // Filter the data array to get only unique project_name values
+            let uniqueProjectNameData = data.filter(item => {
+                if (!uniqueProjectNames.has(item.project_name.split('').join(''))) {
+                    uniqueProjectNames.add(item.project_name.split('').join(''));
+                    return true;
+                }
+                return false;
+            });
+
+            console.log(uniqueProjectNameData);
+            return uniqueProjectNameData;
+        }
+        catch (err) {
+            throw err;
+        }
+    }
 }
 
 module.exports = ReceiptServices;

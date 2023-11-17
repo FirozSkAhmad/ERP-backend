@@ -85,4 +85,24 @@ router.get('/getReceipts', jwtHelperObj.verifyAccessToken, async (req,res,next)=
     }
 })
 
+router.get('/getAvailableReceiptProjectNames', jwtHelperObj.verifyAccessToken, async (req,res,next)=>{
+    try{
+        const reciptsServiceObj = new ReceiptServices();
+        const data = await reciptsServiceObj.getAvailableReceiptProjectNames()
+        .catch(err=>{
+            console.log("errors:",err.message);
+            throw err;
+        })
+
+        res.send({
+            "status": 201,
+            "message": Constants.SUCCESS,
+            "data": data
+        })
+
+    }catch(err){
+        next(err);
+    }
+})
+
 module.exports = router;
