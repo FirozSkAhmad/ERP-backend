@@ -38,10 +38,28 @@ class ReceiptServices {
                 console.log("Error while fetching data", err.message);
                 throw createError.InternalServerError(SQL_ERROR);
             })
-            console.log('checkReceipt:', checkReceipt[0].status);
-            let selectedProjectId = checkReceipt[0].project_id;
+            console.log(checkReceipt);
+            if(!checkReceipt[0]){
+                throw createError.BadRequest("Provided Project is not Available to Onboard the Client")
+            }
+            console.log('checkReceipt:', checkReceipt[0]?.status);
+            let selectedProjectId = checkReceipt[0]?.project_id;
             if (checkReceipt[0].status !== 'AVAILABLE') {
                 throw createError.BadRequest("Provided Project is not Available to Onboard the Client")
+            }
+
+            // Check in Receipts table whether project receipt is present or not
+            const checkReceiptAlready = await ReceiptsModel.findOne({
+                where: {
+                    project_id: selectedProjectId
+                }
+            }).catch(err => {
+                console.log("Error", err.message)
+                throw createError.InternalServerError(SQL_ERROR)
+            })
+
+            if (checkReceiptAlready) {
+                throw createError.Conflict("Receipt already created for current project");
             }
 
             //create a receipt 
