@@ -3,10 +3,6 @@ version: '3'
 services:
   vrcbackend:
     image: vrcbackend:v1
-    restart:
-      policy: on-failure
-      max-retries: 3
-      
     ports:
       - "4200:4200"
     environment:
@@ -17,3 +13,4 @@ services:
       - MYSQL_PORT=${MYSQL_PORT}
       - ACCESS_TOKEN_SECRETKEY=${ACCESS_TOKEN_SECRETKEY}
       - REFRESH_TOKEN_SECRETKEY=${REFRESH_TOKEN_SECRETKEY}
+    restart: always
