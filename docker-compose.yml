@@ -3,6 +3,10 @@ version: '3'
 services:
   vrcbackend:
     image: vrcbackend:v1
+    restart:
+      policy: on-failure
+      max-retries: 3
+      
     ports:
       - "4200:4200"
     environment:
