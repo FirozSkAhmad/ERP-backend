@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const IndexRoute = require('./routes');
 const IndexModel = require('./utils/Models')
-const PluginsLoader = require('./utils/Plugins')
+const PluginsLoader = require('./utils/Plugins');
 
 class App {
     constructor() {
