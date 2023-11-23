@@ -9,7 +9,7 @@ const path = require('path');
  // multer configuration
  let storage = multer.diskStorage({
     destination:(req,file,callback)=>{
-        callback(null,"./uploads")
+        callback(null,"/home/ec2-user/VRC_Backend/uploads")
     },
     filename:(req,file,callback)=>{
         callback(null,file.fieldname + "-" + Date.now() + path.extname(file.originalname))
