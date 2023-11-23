@@ -5,33 +5,51 @@ const JwtHelper = require('../utils/Helpers/jwt_helper')
 const BulkUploadService = require('../services/bulkupload_service')
 const multer = require('multer');
 const path = require('path');
+let g = ""
 
- // multer configuration
- let storage = multer.diskStorage({
-    destination:(req,file,callback)=>{
-        callback(null,"/home/ec2-user/VRC_Backend/uploads")
-    },
-    filename:(req,file,callback)=>{
-        callback(null,file.fieldname + "-" + Date.now() + path.extname(file.originalname))
-    }
-})
-
-let upload = multer({
-    storage:storage
-})
-
-
-// router.get('/', async (req,res)=>{
-//     const filePath = path.join(__dirname, '..', 'index.html');
-//     res.sendFile(filePath);
-// })
-
-
-router.post("/bulkUpload", upload.single('file'), async(req,res,next)=>{
+router.post("/bulkUpload", async(req,res,next)=>{
     try{
+        let storage = multer.diskStorage({
+            destination: function (req, file, callback) {
+                callback(null, process.env.FILE_UPLOAD_PATH)
+            },
+            filename: function (req, file, callback) {
+                console.log(file)
+                callback(null, file.originalname)
+                g = file.originalname;
+                console.log("File name",g);
+            }
+        })
+       
+        const uploadAsync = () => {
+            return new Promise((resolve, reject) => {
+                let upload = multer({
+                    storage: storage,
+                    fileFilter: function (req, file, callback) {
+                        let ext = path.extname(file.originalname);
+                        console.log(req.body);
+                        if (ext !== '.csv' && ext !== '.xlsx') {
+                            return callback(res.end('Only Excel files or Csv are allowed'), null);
+                        }
+                        callback(null, true);
+                    },
+                }).single('file');
+
+                upload(req, res, function (err) {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                });
+            });
+        };
+
+        await uploadAsync(); 
+
         const bulkUploadServiceObj = new BulkUploadService();
-        const completeFilePath = path.join(__dirname, '..', 'uploads', req.file.filename);
-        const {successResults, failureResults} = await bulkUploadServiceObj.uploadBulkData(completeFilePath);
+        const {successResults, failureResults} = await bulkUploadServiceObj.uploadBulkData(process.env.FILE_UPLOAD_PATH.concat(g));
         res.send({
             "status": 200,
             "message": "DATA UPLOADED SUCCESSFULLY",
