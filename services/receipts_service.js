@@ -2,6 +2,8 @@ const createError = require('http-errors')
 const { SQL_ERROR } = require('../utils/Constants/response_messages')
 const { Sequelize } = require('sequelize');
 const ReceiptsModel = require('../utils/Models/Receipts/ReceiptsModel');
+const ProjectsModel = require('../utils/Models/Projects/ProjectsModel');
+const CommissionsModel = require('../utils/Models/Commission/CommissionsModel');
 
 class ReceiptServices {
     constructor() {
@@ -125,6 +127,23 @@ class ReceiptServices {
                 }).catch(err => {
                     throw createError.InternalServerError(SQL_ERROR);
                 })
+                
+                // Add to the commission table
+                const projectData = await ProjectsModel.findOne({
+                    where:{
+                        project_id:payload.project_id
+                    }
+                }).catch(err=>{
+                    console.log("Error while fetching data from project model",err);
+                    throw createError.InternalServerError(SQL_ERROR);
+                })
+
+                if(projectData.dataValues){
+                    await CommissionsModel.create(projectData.dataValues).catch(err=>{
+                        console.log("Error while inserting into commissions model",err);
+                        throw createError.InternalServerError(SQL_ERROR);
+                    })
+                }
 
             })
 

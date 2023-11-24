@@ -26,6 +26,14 @@ const PayrollModel = global.DATA.CONNECTION.mysql.define("payroll", {
     updatedAt: {
         type: Sequelize.DataTypes.DATE,
         allowNull: false
+    },
+    payroll_type:{
+        type: Sequelize.STRING(100),
+        allowNull: false
+    },
+    project_id:{
+        type:Sequelize.INTEGER,
+        allowNull:true
     }
 }, {
     tableName: "payroll"

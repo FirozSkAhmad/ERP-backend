@@ -9,7 +9,10 @@ class PayrollService {
 
     async addNewPayRollDetails(payrollDetails) {
         try {
-            const data = await global.DATA.MODELS.payroll.create(payrollDetails)
+            const data = await global.DATA.MODELS.payroll.create({
+                ...payrollDetails,
+                payroll_type:"SALARY"
+            })
                 .catch(err => {
                     console.log("Error while saving payroll details", err);
                     throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR);

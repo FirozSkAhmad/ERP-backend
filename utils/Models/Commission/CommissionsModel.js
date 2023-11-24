@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize')
 
-const ProjectsModel = global.DATA.CONNECTION.mysql.define("projects", {
+const CommissionsModel = global.DATA.CONNECTION.mysql.define("commissions", {
     project_id: {
         type: Sequelize.DataTypes.INTEGER,
         primaryKey: true,
@@ -52,7 +52,7 @@ const ProjectsModel = global.DATA.CONNECTION.mysql.define("projects", {
         allowNull: true
     },
     amount_received:{
-        type: Sequelize.DataTypes.FLOAT,
+        type: Sequelize.DataTypes.INTEGER,
         allowNull: true
     },
     createdAt: {
@@ -63,12 +63,8 @@ const ProjectsModel = global.DATA.CONNECTION.mysql.define("projects", {
         type: Sequelize.DataTypes.DATE,
         allowNull: false
     },
-    commission_amount:{
-        type: Sequelize.DataTypes.FLOAT,
-        allowNull: true
-    }
 }, {
-    tableName: "projects"
+    tableName: "commissions"
 })
 
-module.exports = ProjectsModel
+module.exports = CommissionsModel
