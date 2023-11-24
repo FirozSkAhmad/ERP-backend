@@ -189,7 +189,15 @@ router.get('/getFilteredProjectPlotNumbers/:projectName/:projectType', jwtHelper
 router.get('/getFilteredProjectStatus', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
     try {
         const projectsServiceObj = new ProductsService();
-        const data = await projectsServiceObj.getFilteredProjectStatus(req.body)
+        const payload = {
+            "project_name": req.query.project_name,
+            "project_type": req.query.project_type,
+            "tower_number": req.query.tower_number,
+            "flat_number":  req.query.flat_number,
+            "villa_number": req.query.villa_number,
+            "plot_number":  req.query.plot_number,
+        }
+        const data = await projectsServiceObj.getFilteredProjectStatus(payload)
             .catch(err => {
                 console.log("Error occured", err.message);
                 throw err;
