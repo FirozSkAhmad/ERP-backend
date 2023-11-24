@@ -179,13 +179,16 @@ class ProjectsService {
                 console.log('payload:',payload);
 
                 if((getProjectData==null)) throw createError.BadRequest("Project Does not exists")
-                //check project exist in income table or not 
-                const checkProjectExistAlreadyInProject = await global.DATA.MODELS.income.findOne({
+                console.log("Reached HEre")
+
+                //check project exist in projects table or not 
+                const checkProjectExistAlreadyInProject = await global.DATA.MODELS.projects.findOne({
                     where: {
                         project_id: payload.project_id
                     },
                     transaction: t
                 }).catch(err => {
+                    console.log(err);
                     throw createError.InternalServerError(SQL_ERROR);
                 })
 
@@ -199,6 +202,7 @@ class ProjectsService {
                     },
                     transaction: t
                 }).catch(err => {
+                    console.log(err);
                     throw createError.InternalServerError(SQL_ERROR);
                 })
 
@@ -213,12 +217,14 @@ class ProjectsService {
                 })
 
                 console.log("checkProjectExistAlreadyInIncome:", checkProjectExistAlreadyInIncome)
-                let previouslyReceivedAmount = checkProjectExistAlreadyInIncome.amount_received;
-                console.log('previously received amount:', previouslyReceivedAmount);
-
+                
                 if (checkProjectExistAlreadyInIncome) {
                     console.log("project already exists in income table");
                     //then update details with amount added 
+
+                    let previouslyReceivedAmount = checkProjectExistAlreadyInIncome.amount_received;
+                    console.log('previously received amount:', previouslyReceivedAmount);
+
 
                     let updateIncomeDetails = {
                         status: payload.status,
