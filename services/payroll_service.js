@@ -77,6 +77,51 @@ class PayrollService {
             throw err;
         }
     }
+
+    async getRoleNames(){
+        try{
+            const data = await global.DATA.MODELS.roletypesmodel.findAll().catch(err => {
+                console.log("Error while fetching payroll data", err);
+                throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR);
+            });
+            return data;
+        }
+        catch(err){
+            throw err;
+        }
+    }
+
+    async addPayrollRole(role_name){
+        try{
+            const data = await global.DATA.MODELS.roletypesmodel.create({
+                role_name:role_name
+            }).catch(err => {
+                    console.log("Error while saving payroll role name details", err);
+                    throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR);
+                })
+            return data;
+        }
+        catch(err){
+            throw err;
+        }
+    }
+
+    async deletePayrollRole(id){
+        try{
+            const data = await global.DATA.MODELS.roletypesmodel.destroy({
+                where:{
+                    id:id
+                }
+            }).catch(err => {
+                    console.log("Error while deleting payroll role name details", err);
+                    throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR);
+                })
+            return data;
+        }
+        catch(err){
+            throw err;
+        }
+    }
 }
 
 module.exports = PayrollService;
