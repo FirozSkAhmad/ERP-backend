@@ -10,6 +10,22 @@ class CommissionService{
 
     }
 
+    async getCommissions(){
+        try {
+            const response = await CommissionsModel.findAll().catch(err => {
+                console.log("Error while fetching data", err.message);
+                throw createError.InternalServerError(SQL_ERROR);
+            })
+
+            const data = (response);
+            console.log("View All Commisions", data);
+            return data;
+        }
+        catch (err) {
+            throw err;
+        }
+    }
+
     async validateCommission(payload){
         // Delete from commission table and add in the projects table
         try{

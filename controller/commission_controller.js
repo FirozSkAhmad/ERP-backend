@@ -5,6 +5,26 @@ const router = express.Router()
 const CommissionService = require('../services/commissions_service')
 const Constants = require('../utils/Constants/response_messages')
 
+router.get('/getCommisions', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
+    try {
+        const projectsServiceObj = new CommissionService()
+        const data = await projectsServiceObj.getCommissions()
+            .catch(err => {
+                console.log("Error occured", err.message);
+                throw err;
+            })
+
+        res.send({
+            "status": 200,
+            "message": Constants.SUCCESS,
+            "data": data
+        })
+    }
+    catch (err) {
+        next(err);
+    }
+})
+
 router.post("/validateCommission", jwtHelperObj.verifyAccessToken, async (req,res,next)=>{
     try{
         const commissionServiceObj = new CommissionService();
@@ -23,6 +43,7 @@ router.post("/validateCommission", jwtHelperObj.verifyAccessToken, async (req,re
         next(err);
     }
 })
+
 router.post("/deleteComission", jwtHelperObj.verifyAccessToken, async (req,res,next)=>{
         try{
             const commissionServiceObj = new CommissionService();
