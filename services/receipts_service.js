@@ -137,9 +137,32 @@ class ReceiptServices {
                     console.log("Error while fetching data from project model",err);
                     throw createError.InternalServerError(SQL_ERROR);
                 })
-
+                console.log('projectdata get:',projectData);
                 if(projectData.dataValues){
-                    await CommissionsModel.create(projectData.dataValues).catch(err=>{
+                    let commisionEntryData={
+                            project_id: projectData.dataValues.project_id,
+                            project_name: projectData.dataValues.project_name,
+                            tower_number: projectData.dataValues.tower_number,
+                            flat_number: projectData.dataValues.flat_number,
+                            status: projectData.dataValues.status,
+                            project_type: projectData.dataValues.project_type,
+                            villa_number: projectData.dataValues.villa_number,
+                            plot_number: projectData.dataValues.plot_number,
+                            pid: projectData.dataValues.pid,
+                    }
+
+                    let newData= {...commisionEntryData, 
+                            project_id: payload.project_id,
+                            status: payload.status,
+                            client_name: payload.client_name,
+                            client_phone: payload.client_phone,
+                            sales_person: payload.sales_person,
+                            amount_received: payload.amount_received
+                    }
+
+                    console.log('newData get:',newData);
+                    
+                    await CommissionsModel.create(newData).catch(err=>{
                         console.log("Error while inserting into commissions model",err);
                         throw createError.InternalServerError(SQL_ERROR);
                     })
