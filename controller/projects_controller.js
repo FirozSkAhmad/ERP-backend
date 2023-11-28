@@ -186,6 +186,128 @@ router.get('/getFilteredProjectPlotNumbers/:projectName/:projectType', jwtHelper
     }
 })
 
+//available apis for onboarding
+router.get('/getAvailableFilteredProjectTypes/:projectName', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
+    try {
+        const projectsServiceObj = new ProductsService();
+        const payload = {
+            "project_name": req.params.projectName
+        }
+        const data = await projectsServiceObj.getAvailableFilteredProjectTypes(payload)
+            .catch(err => {
+                console.log("Error occured", err.message);
+                throw err;
+            })
+
+        res.send({
+            "status": 200,
+            "message": Constants.SUCCESS,
+            "data": data
+        })
+    }
+    catch (err) {
+        next(err);
+    }
+})
+
+router.get('/getAvailableFilteredProjectTowerNumbers/:projectName/:projectType', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
+    try {
+        const projectsServiceObj = new ProductsService();
+        const payload = {
+            "project_name": req.params.projectName,
+            "project_type": req.params.projectType
+        }
+        const data = await projectsServiceObj.getAvailableFilteredProjectTowerNumbers(payload)
+            .catch(err => {
+                console.log("Error occured", err.message);
+                throw err;
+            })
+
+        res.send({
+            "status": 200,
+            "message": Constants.SUCCESS,
+            "data": data
+        })
+    }
+    catch (err) {
+        next(err);
+    }
+})
+
+router.get('/getAvailableFilteredProjectFlatNumbers/:projectName/:projectType/:projectTowerNumber', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
+    try {
+        const projectsServiceObj = new ProductsService();
+        const payload = {
+            "project_name": req.params.projectName,
+            "project_type": req.params.projectType,
+            "tower_number": req.params.projectTowerNumber
+        }
+        const data = await projectsServiceObj.getAvailableFilteredProjectFlatNumbers(payload)
+            .catch(err => {
+                console.log("Error occured", err.message);
+                throw err;
+            })
+
+        res.send({
+            "status": 200,
+            "message": Constants.SUCCESS,
+            "data": data
+        })
+    }
+    catch (err) {
+        next(err);
+    }
+})
+
+router.get('/getAvailableFilteredProjectVillaNumbers/:projectName/:projectType', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
+    try {
+        const projectsServiceObj = new ProductsService();
+        const payload = {
+            "project_name": req.params.projectName,
+            "project_type": req.params.projectType
+        }
+        const data = await projectsServiceObj.getAvailableFilteredProjectVillaNumbers(payload)
+            .catch(err => {
+                console.log("Error occured", err.message);
+                throw err;
+            })
+
+        res.send({
+            "status": 200,
+            "message": Constants.SUCCESS,
+            "data": data
+        })
+    }
+    catch (err) {
+        next(err);
+    }
+})
+
+router.get('/getAvailableFilteredProjectPlotNumbers/:projectName/:projectType', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
+    try {
+        const projectsServiceObj = new ProductsService();
+        const payload = {
+            "project_name": req.params.projectName,
+            "project_type": req.params.projectType
+        }
+        const data = await projectsServiceObj.getAvailableFilteredProjectPlotNumbers(payload)
+            .catch(err => {
+                console.log("Error occured", err.message);
+                throw err;
+            })
+
+        res.send({
+            "status": 200,
+            "message": Constants.SUCCESS,
+            "data": data
+        })
+    }
+    catch (err) {
+        next(err);
+    }
+})
+
+
 router.get('/getFilteredProjectStatus', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
     try {
         const projectsServiceObj = new ProductsService();
