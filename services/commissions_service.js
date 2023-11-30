@@ -62,8 +62,13 @@ class CommissionService{
                     amount: payload.commission_amount,
                     project_id:projectId,
                     name: project_name,
+                    project_type:payload.project_type,
+                    tower_number:payload.tower_number,
+                    flat_number:payload.flat_number,
+                    villa_number:payload.villa_number,
+                    plot_number:payload.plot_number,
                     role_type:"COMMISSION",
-                    payroll_type:"COMMISSION"
+                    payroll_type:"COMMISSION",
                 }).catch(err=>{
                     console.log("ERROR while inserting into payroll table",err);
                     throw createError.InternalServerError(SQL_ERROR);
