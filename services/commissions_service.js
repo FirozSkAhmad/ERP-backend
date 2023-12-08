@@ -26,6 +26,22 @@ class CommissionService {
         }
     }
 
+    async getCancledCommissions() {
+        try {
+            const response = await global.DATA.MODELS.rejectedcommissions.findAll().catch(err => {
+                console.log("Error while fetching data", err.message);
+                throw createError.InternalServerError(SQL_ERROR);
+            })
+
+            const data = (response);
+            console.log("View All Cancled Commisions", data);
+            return data;
+        }
+        catch (err) {
+            throw err;
+        }
+    }
+
     async validateCommission(payload) {
         // Delete from commission table and add in the projects table
         try {
@@ -82,29 +98,54 @@ class CommissionService {
 
     async cancelCommission(payload) {
         try {
-            // Delete from commission table
-            const commission_id = payload.project_id;
-            const checkExists = await CommissionsModel.findOne({
-                where: {
-                    project_id: commission_id
-                }
-            }).catch(err => {
-                console.log("Error while finding commission", err);
-                throw createError.NotFound("Commission with given Id Not Found");
-            })
+            await global.DATA.CONNECTION.mysql.transaction(async (t) => {
 
-            if (checkExists) {
-                await CommissionsModel.destroy({
+                const commission_id = payload.project_id;
+                const checkExists = await CommissionsModel.findOne({
                     where: {
                         project_id: commission_id
                     }
                 }).catch(err => {
-                    console.log("error while deleting commission details", err);
-                    throw createError.InternalServerError(SQL_ERROR);
+                    console.log("Error while finding commission", err);
+                    throw createError.NotFound("Commission with given Id Not Found");
                 })
 
-                return "COMMISSION DELETED SUCCESSFULLY";
-            }
+                if (checkExists) {
+                    await global.DATA.MODELS.rejectedcommissions.create({
+                        project_id: checkExists.project_id,
+                        project_name: checkExists.project_name,
+                        tower_number: checkExists.tower_number,
+                        flat_number: checkExists.flat_number,
+                        status: checkExists.status,
+                        project_type: checkExists.project_type,
+                        villa_number: checkExists.villa_number,
+                        plot_number: checkExists.plot_number,
+                        pid: checkExists.pid,
+                        client_name: checkExists.client_name,
+                        client_phone: checkExists.client_phone,
+                        sales_person: checkExists.sales_person,
+                        amount_received: checkExists.amount_received,
+                    }, {
+                        transaction: t
+                    }).catch(err => {
+                        console.log(err);
+                        throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR)
+                    })
+
+                    await CommissionsModel.destroy({
+                        where: {
+                            project_id: commission_id
+                        },
+                        transaction: t
+                    }).catch(err => {
+                        console.log("error while deleting commission details", err);
+                        throw createError.InternalServerError(SQL_ERROR);
+                    })
+
+                    return "COMMISSION DELETED SUCCESSFULLY";
+                }
+
+            })
         }
         catch (err) {
             throw err;
