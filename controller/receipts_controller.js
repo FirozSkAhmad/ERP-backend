@@ -5,7 +5,7 @@ const JwtHelper = require('../utils/Helpers/jwt_helper')
 const jwtHelperObj = new JwtHelper();
 const router = express.Router()
 
-router.post('/createReceipt', jwtHelperObj.verifyAccessToken, async (req,res,next)=>{
+router.post('/createReceipt', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
     try {
         const reciptsServiceObj = new ReceiptServices();
         const data = await reciptsServiceObj.createReceipt(req.body)
@@ -25,14 +25,14 @@ router.post('/createReceipt', jwtHelperObj.verifyAccessToken, async (req,res,nex
     }
 })
 
-router.post('/validateReceipt', jwtHelperObj.verifyAccessToken, async (req,res,next)=>{
-    try{
+router.post('/validateReceipt', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
+    try {
         const reciptsServiceObj = new ReceiptServices();
         const data = await reciptsServiceObj.validateReceipt(req.body)
-        .catch(err=>{
-            console.log("errors:",err.message);
-            throw err;
-        })
+            .catch(err => {
+                console.log("errors:", err.message);
+                throw err;
+            })
 
         res.send({
             "status": 201,
@@ -40,19 +40,19 @@ router.post('/validateReceipt', jwtHelperObj.verifyAccessToken, async (req,res,n
             "data": data
         })
 
-    }catch(err){
+    } catch (err) {
         next(err);
     }
 })
 
-router.post('/rejectReceipt', jwtHelperObj.verifyAccessToken, async (req,res,next)=>{
-    try{
+router.post('/rejectReceipt', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
+    try {
         const reciptsServiceObj = new ReceiptServices();
         const data = await reciptsServiceObj.rejectReceipt(req.body)
-        .catch(err=>{
-            console.log("errors:",err.message);
-            throw err;
-        })
+            .catch(err => {
+                console.log("errors:", err.message);
+                throw err;
+            })
 
         res.send({
             "status": 201,
@@ -60,19 +60,19 @@ router.post('/rejectReceipt', jwtHelperObj.verifyAccessToken, async (req,res,nex
             "data": data
         })
 
-    }catch(err){
+    } catch (err) {
         next(err);
     }
 })
 
-router.get('/getReceipts', jwtHelperObj.verifyAccessToken, async (req,res,next)=>{
-    try{
+router.get('/getReceipts', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
+    try {
         const reciptsServiceObj = new ReceiptServices();
         const data = await reciptsServiceObj.getReceipts()
-        .catch(err=>{
-            console.log("errors:",err.message);
-            throw err;
-        })
+            .catch(err => {
+                console.log("errors:", err.message);
+                throw err;
+            })
 
         res.send({
             "status": 201,
@@ -80,19 +80,19 @@ router.get('/getReceipts', jwtHelperObj.verifyAccessToken, async (req,res,next)=
             "data": data
         })
 
-    }catch(err){
+    } catch (err) {
         next(err);
     }
 })
 
-router.get('/getAvailableReceiptProjectNames', jwtHelperObj.verifyAccessToken, async (req,res,next)=>{
-    try{
+router.get('/getApprovedReceiptsList', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
+    try {
         const reciptsServiceObj = new ReceiptServices();
-        const data = await reciptsServiceObj.getAvailableReceiptProjectNames()
-        .catch(err=>{
-            console.log("errors:",err.message);
-            throw err;
-        })
+        const data = await reciptsServiceObj.getApprovedReceiptsList()
+            .catch(err => {
+                console.log("errors:", err.message);
+                throw err;
+            })
 
         res.send({
             "status": 201,
@@ -100,7 +100,46 @@ router.get('/getAvailableReceiptProjectNames', jwtHelperObj.verifyAccessToken, a
             "data": data
         })
 
-    }catch(err){
+    } catch (err) {
+        next(err);
+    }
+})
+router.get('/getRejectedReceiptsList', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
+    try {
+        const reciptsServiceObj = new ReceiptServices();
+        const data = await reciptsServiceObj.getRejectedReceiptsList()
+            .catch(err => {
+                console.log("errors:", err.message);
+                throw err;
+            })
+
+        res.send({
+            "status": 201,
+            "message": Constants.SUCCESS,
+            "data": data
+        })
+
+    } catch (err) {
+        next(err);
+    }
+})
+
+router.get('/getAvailableReceiptProjectNames', jwtHelperObj.verifyAccessToken, async (req, res, next) => {
+    try {
+        const reciptsServiceObj = new ReceiptServices();
+        const data = await reciptsServiceObj.getAvailableReceiptProjectNames()
+            .catch(err => {
+                console.log("errors:", err.message);
+                throw err;
+            })
+
+        res.send({
+            "status": 201,
+            "message": Constants.SUCCESS,
+            "data": data
+        })
+
+    } catch (err) {
         next(err);
     }
 })

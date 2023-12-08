@@ -20,8 +20,9 @@ class MySqlModels {
                     files.forEach(file => {
                         const modelPath = path.join(directoryPath, file);
                         const model = require(modelPath);
-                        // console.log('model data:',model)
+                        console.log('model data:',model)
                         global.DATA.MODELS[model.name] = model;
+                        global.DATA.MODELS[model.name].sync()
                     });
                 }
             }));

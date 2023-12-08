@@ -4,6 +4,8 @@ const { Sequelize } = require('sequelize');
 const ReceiptsModel = require('../utils/Models/Receipts/ReceiptsModel');
 const ProjectsModel = require('../utils/Models/Projects/ProjectsModel');
 const CommissionsModel = require('../utils/Models/Commission/CommissionsModel');
+const Constants = require('../utils/Constants/response_messages')
+
 
 class ReceiptServices {
     constructor() {
@@ -41,7 +43,7 @@ class ReceiptServices {
                 throw createError.InternalServerError(SQL_ERROR);
             })
             console.log(checkReceipt);
-            if(!checkReceipt[0]){
+            if (!checkReceipt[0]) {
                 throw createError.BadRequest("Provided Project is not Available to Onboard the Client")
             }
             console.log('checkReceipt:', checkReceipt[0]?.status);
@@ -101,6 +103,40 @@ class ReceiptServices {
                     throw createError.InternalServerError(SQL_ERROR);
                 })
 
+                // Get the details from the receipts table
+                const data = await global.DATA.MODELS.receipts.findOne({
+                    where: {
+                        project_id: payload.project_id
+                    },
+                    transaction: t
+                }).catch(err => {
+                    console.log(err);
+                    throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR)
+                })
+
+                // Add to the rejectedreceipts table
+                await global.DATA.MODELS.approvedreceipts.create({
+                    project_id: data.project_id,
+                    project_name: data.project_name,
+                    tower_number: data.tower_number,
+                    flat_number: data.flat_number,
+                    status: data.status,
+                    project_type: data.project_type,
+                    villa_number: data.villa_number,
+                    plot_number: data.plot_number,
+                    pid: data.pid,
+                    client_name: data.client_name,
+                    client_phone: data.client_phone,
+                    sales_person: data.sales_person,
+                    amount_received: data.amount_received
+                }, {
+                    transaction: t
+                }).catch(err => {
+                    console.log(err);
+                    throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR)
+                })
+
+
                 //Delete from the receipts table
                 await global.DATA.MODELS.receipts.destroy({
                     where: {
@@ -127,43 +163,44 @@ class ReceiptServices {
                 }).catch(err => {
                     throw createError.InternalServerError(SQL_ERROR);
                 })
-                
+
                 // Add to the commission table
                 const projectData = await ProjectsModel.findOne({
-                    where:{
-                        project_id:payload.project_id
+                    where: {
+                        project_id: payload.project_id
                     }
-                }).catch(err=>{
-                    console.log("Error while fetching data from project model",err);
+                }).catch(err => {
+                    console.log("Error while fetching data from project model", err);
                     throw createError.InternalServerError(SQL_ERROR);
                 })
-                console.log('projectdata get:',projectData);
-                if(projectData.dataValues){
-                    let commisionEntryData={
-                            project_id: projectData.dataValues.project_id,
-                            project_name: projectData.dataValues.project_name,
-                            tower_number: projectData.dataValues.tower_number,
-                            flat_number: projectData.dataValues.flat_number,
-                            status: projectData.dataValues.status,
-                            project_type: projectData.dataValues.project_type,
-                            villa_number: projectData.dataValues.villa_number,
-                            plot_number: projectData.dataValues.plot_number,
-                            pid: projectData.dataValues.pid,
+                console.log('projectdata get:', projectData);
+                if (projectData.dataValues) {
+                    let commisionEntryData = {
+                        project_id: projectData.dataValues.project_id,
+                        project_name: projectData.dataValues.project_name,
+                        tower_number: projectData.dataValues.tower_number,
+                        flat_number: projectData.dataValues.flat_number,
+                        status: projectData.dataValues.status,
+                        project_type: projectData.dataValues.project_type,
+                        villa_number: projectData.dataValues.villa_number,
+                        plot_number: projectData.dataValues.plot_number,
+                        pid: projectData.dataValues.pid,
                     }
 
-                    let newData= {...commisionEntryData, 
-                            project_id: payload.project_id,
-                            status: payload.status,
-                            client_name: payload.client_name,
-                            client_phone: payload.client_phone,
-                            sales_person: payload.sales_person,
-                            amount_received: payload.amount_received
+                    let newData = {
+                        ...commisionEntryData,
+                        project_id: payload.project_id,
+                        status: payload.status,
+                        client_name: payload.client_name,
+                        client_phone: payload.client_phone,
+                        sales_person: payload.sales_person,
+                        amount_received: payload.amount_received
                     }
 
-                    console.log('newData get:',newData);
-                    
-                    await CommissionsModel.create(newData).catch(err=>{
-                        console.log("Error while inserting into commissions model",err);
+                    console.log('newData get:', newData);
+
+                    await CommissionsModel.create(newData).catch(err => {
+                        console.log("Error while inserting into commissions model", err);
                         throw createError.InternalServerError(SQL_ERROR);
                     })
                 }
@@ -177,11 +214,43 @@ class ReceiptServices {
         }
     }
 
-    async rejectReceipt(payload){
+    async rejectReceipt(payload) {
         try {
 
             // just remove from receipts table
             await global.DATA.CONNECTION.mysql.transaction(async (t) => {
+
+                // Get the details from the receipts table
+                const data = await global.DATA.MODELS.receipts.findOne({
+                    where: {
+                        project_id: payload.project_id
+                    },
+                    transaction: t
+                }).catch(err => {
+                    console.log(err);
+                    throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR)
+                })
+                // Add to the rejectedreceipts table
+                await global.DATA.MODELS.rejectedreceipts.create({
+                    project_id: data.project_id,
+                    project_name: data.project_name,
+                    tower_number: data.tower_number,
+                    flat_number: data.flat_number,
+                    status: data.status,
+                    project_type: data.project_type,
+                    villa_number: data.villa_number,
+                    plot_number: data.plot_number,
+                    pid: data.pid,
+                    client_name: data.client_name,
+                    client_phone: data.client_phone,
+                    sales_person: data.sales_person,
+                    amount_received: data.amount_received
+                }, {
+                    transaction: t
+                }).catch(err => {
+                    console.log(err);
+                    throw new global.DATA.PLUGINS.httperrors.InternalServerError(Constants.SQL_ERROR)
+                })
 
                 //Delete from the receipts table
                 await global.DATA.MODELS.receipts.destroy({
@@ -202,24 +271,54 @@ class ReceiptServices {
         }
     }
 
-    async getReceipts(){
-        try{
+    async getReceipts() {
+        try {
             const ReceiptsData = await global.DATA.MODELS.receipts.findAll()
-            .catch(err=>{
-                console.log("error while getting receipts:",err.message);
-                throw createError.InternalServerError(SQL_ERROR);
-            })
+                .catch(err => {
+                    console.log("error while getting receipts:", err.message);
+                    throw createError.InternalServerError(SQL_ERROR);
+                })
 
             return ReceiptsData;
 
-        }catch(err){
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async getApprovedReceiptsList() {
+        try {
+            const ReceiptsData = await global.DATA.MODELS.approvedreceipts.findAll()
+                .catch(err => {
+                    console.log("error while getting receipts:", err.message);
+                    throw createError.InternalServerError(SQL_ERROR);
+                })
+
+            return ReceiptsData;
+
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    async getRejectedReceiptsList() {
+        try {
+            const ReceiptsData = await global.DATA.MODELS.rejectedreceipts.findAll()
+                .catch(err => {
+                    console.log("error while getting receipts:", err.message);
+                    throw createError.InternalServerError(SQL_ERROR);
+                })
+
+            return ReceiptsData;
+
+        } catch (err) {
             throw err;
         }
     }
 
     async getAvailableReceiptProjectNames() {
         try {
-            const response = await DATA.CONNECTION.mysql.query(`SELECT project_name
+            const response = await global.DATA.CONNECTION.mysql.query(`SELECT project_name
             FROM projects
             WHERE project_id NOT IN (SELECT project_id FROM receipts);`, {
                 type: Sequelize.QueryTypes.SELECT
